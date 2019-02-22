@@ -73,7 +73,8 @@ namespace ConsoleBowling
             var game = new Game();
             while (game.FrameNumber.HasValue)
             {
-                Console.WriteLine($"It's frame {game.FrameNumber}, roll {game.CurrentFrame.RollNumber}.");
+                Console.Write($"It's frame {game.FrameNumber}, roll {game.CurrentFrame.RollNumber}. ");
+                Console.WriteLine($"There are {game.PinsUp} pins standing.");
                 Console.Write("Press any key to roll the ball...");
                 Console.ReadKey();
                 Console.WriteLine();
@@ -82,6 +83,7 @@ namespace ConsoleBowling
                 game.ApplyRoll(pinsHit);
                 Console.WriteLine($"Now there {game.PinsUp.IsAre()} {game.PinsUp} pin{game.PinsUp.S()} standing.");
                 Console.WriteLine($"The score is {game.Score}");
+                Console.WriteLine();
             }
             Console.WriteLine("All done!");
             Console.WriteLine($"Your score was {game.Score}.");
