@@ -5,7 +5,7 @@ namespace ConsoleBowling
 {
     internal class Frame
     {
-        public List<int> Rolls { get; set; } = new List<int>();
+        public List<int> Rolls { get; } = new List<int>();
 
         public bool Over
         {
@@ -18,9 +18,9 @@ namespace ConsoleBowling
             }
         }
 
-        public bool Strike => Rolls.Count >= 1 && Rolls[0] == 10;
+        private bool Strike => Rolls.Count >= 1 && Rolls[0] == 10;
 
-        public bool Spare => Rolls.Count >= 2 && Rolls[0] + Rolls[1] == 10;
+        private bool Spare => Rolls.Count >= 2 && Rolls[0] + Rolls[1] == 10;
 
         public bool Satisfied
         {

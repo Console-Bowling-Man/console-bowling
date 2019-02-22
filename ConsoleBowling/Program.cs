@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Console = System.Console;
 
 namespace ConsoleBowling
@@ -9,7 +7,7 @@ namespace ConsoleBowling
     internal static class Program
     {
         private const string HighScorePath = "highScore.txt";
-        private static Random Random { get; set; } = new Random();
+        private static Random Random { get; } = new Random();
 
         private static string IsAre(this int value) => value == 1 ? "is" : "are";
         private static string S(this int value) => value == 1 ? "" : "s";

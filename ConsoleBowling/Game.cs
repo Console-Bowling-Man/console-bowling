@@ -5,9 +5,9 @@ namespace ConsoleBowling
 {
     internal class Game
     {
-        public Frame[] Frames { get; set; } = Enumerable.Range(0, 10).Select(i => new Frame()).ToArray();
+        private Frame[] Frames { get; } = Enumerable.Range(0, 10).Select(i => new Frame()).ToArray();
 
-        public int? FrameIndex
+        private int? FrameIndex
         {
             get
             {
@@ -44,7 +44,7 @@ namespace ConsoleBowling
         public void ApplyRoll(int pinsHit)
         {
             var unsatisfied = new List<Frame>();
-            for (int i = 0; i < FrameNumber; i++)
+            for (var i = 0; i < FrameNumber; i++)
             {
                 var theFrame = Frames[i];
                 if (!theFrame.Satisfied)
