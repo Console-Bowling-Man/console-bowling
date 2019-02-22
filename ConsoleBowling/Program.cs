@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Console = System.Console;
 
 namespace ConsoleBowling
@@ -70,87 +72,30 @@ namespace ConsoleBowling
             Console.WriteLine("It's time to bowl!");
             Console.WriteLine();
 
-            var thisRollMultiplier = 1;
-            var nextRollMultiplier = 1;
-            var nextNextRollMultiplier = 1;
-            var frame = 1;
-            var frameRoll = 1;
-            var pinsUp = 10;
-            var points = 0;
-
-            while (true)
+            var game = new Game();
+            while (game.FrameNumber.HasValue)
             {
-                var maxFrameRolls = frame == 10 ? 3 : 2;
-                Console.Write($"It's frame {frame}, roll {frameRoll}/{maxFrameRolls}! ");
-                Console.Write($"{pinsUp} pin{pinsUp.S()} {pinsUp.IsAre()} standing. ");
-                Console.WriteLine($"You have {points} point{points.S()}.");
-                if (thisRollMultiplier != 1)
-                    Console.WriteLine($"This roll is worth {thisRollMultiplier}x!");
+                Console.WriteLine($"It's frame {game.FrameNumber}, roll {game.CurrentFrame.RollNumber}.");
                 Console.Write("Press any key to roll the ball...");
                 Console.ReadKey();
                 Console.WriteLine();
-                var pinsHit = Random.Next(pinsUp+1);
-
-
-
-                pinsUp -= pinsHit;
-                var newPoints = pinsHit * thisRollMultiplier;
+                var pinsHit = Random.Next(game.PinsUp + 1);
                 Console.Write($"You knocked down {pinsHit} pin{pinsHit.S()}. ");
-                Console.WriteLine($"Now there {pinsUp.IsAre()} {pinsUp} pin{pinsUp.S()} standing.");
-                if (thisRollMultiplier != 1 && pinsHit != 0)
-                    Console.WriteLine($"This roll was worth {thisRollMultiplier}x, " +
-                                      $"so it's worth {newPoints} points instead of {pinsHit}");
-                points += newPoints;
-
-                var frameOver = frameRoll >= maxFrameRolls || pinsUp == 0;
-
-                if (frame == 10 && frameOver)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("You're all done!");
-                    Console.WriteLine($"Your final score was {points}");
-                    if (points > highScore)
-                    {
-                        Console.WriteLine("That's a new high score!");
-                        File.WriteAllText(HighScorePath, points.ToString());
-                    }
-                    Console.Write("Press the any key to quit...");
-                    Console.ReadKey();
-                    Console.WriteLine();
-                    return;
-                }
-
-                if (frameOver)
-                {
-                    if (pinsUp == 0)
-                    {
-                        nextRollMultiplier += 1;
-                        if (frameRoll == 1)
-                        {
-                            Console.WriteLine("That means you got a strike!");
-                            nextNextRollMultiplier += 1;
-                        }
-                        else
-                        {
-                            Console.WriteLine("That means you got a spare!");
-                        }
-                    }
-
-                    frame++;
-                    frameRoll = 1;
-                    pinsUp = 10;
-                }
-                else
-                {
-                    frameRoll++;
-                }
-
-
-                thisRollMultiplier = nextRollMultiplier;
-                nextRollMultiplier = nextNextRollMultiplier;
-                nextNextRollMultiplier = 1;
-                Console.WriteLine();
+                game.ApplyRoll(pinsHit);
+                Console.WriteLine($"Now there {game.PinsUp.IsAre()} {game.PinsUp} pin{game.PinsUp.S()} standing.");
+                Console.WriteLine($"The score is {game.Score}");
             }
+            Console.WriteLine("All done!");
+            Console.WriteLine($"Your score was {game.Score}.");
+            if (game.Score > highScore)
+            {
+                Console.WriteLine("That's a new high score!");
+                File.WriteAllText(HighScorePath, game.Score.ToString());
+            }
+            Console.Write("Press any key to exit...");
+            Console.ReadKey();
+            Console.WriteLine();
+
         }
     }
 }
