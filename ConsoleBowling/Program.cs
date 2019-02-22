@@ -57,6 +57,7 @@ namespace ConsoleBowling
             {
                 Console.WriteLine("There is no high score currently,");
                 Console.WriteLine("but don't let your guard down!");
+                highScore = 0;
             }
 
 
@@ -101,18 +102,25 @@ namespace ConsoleBowling
                                       $"so it's worth {newPoints} points instead of {pinsHit}");
                 points += newPoints;
 
-                if (frame == 10 && frameRoll == 3)
+                var frameOver = frameRoll >= maxFrameRolls || pinsUp == 0;
+
+                if (frame == 10 && frameOver)
                 {
                     Console.WriteLine();
                     Console.WriteLine("You're all done!");
                     Console.WriteLine($"Your final score was {points}");
+                    if (points > highScore)
+                    {
+                        Console.WriteLine("That's a new high score!");
+                        File.WriteAllText(HighScorePath, points.ToString());
+                    }
                     Console.Write("Press the any key to quit...");
                     Console.ReadKey();
                     Console.WriteLine();
                     return;
                 }
 
-                if (frameRoll >= maxFrameRolls || pinsUp == 0)
+                if (frameOver)
                 {
                     if (pinsUp == 0)
                     {
