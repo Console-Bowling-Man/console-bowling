@@ -41,16 +41,27 @@ namespace ConsoleBowling
 
         public int Score => Frames.Sum(frame => frame.Score);
 
+        private List<Frame> Unsatisfied
+        {
+            get
+            {
+                var unsatisfied = new List<Frame>();
+                for (var i = 0; i < FrameNumber; i++)
+                {
+                    var theFrame = Frames[i];
+                    if (!theFrame.Satisfied)
+                        unsatisfied.Add(theFrame);
+                }
+
+                return unsatisfied;
+            }
+        }
+
+        public int NextRollWorth => Unsatisfied.Count;
+
         public void ApplyRoll(int pinsHit)
         {
-            var unsatisfied = new List<Frame>();
-            for (var i = 0; i < FrameNumber; i++)
-            {
-                var theFrame = Frames[i];
-                if (!theFrame.Satisfied)
-                    unsatisfied.Add(theFrame);
-            }
-            foreach (var frame in unsatisfied)
+            foreach (var frame in Unsatisfied)
                 frame.Rolls.Add(pinsHit);
         }
     }

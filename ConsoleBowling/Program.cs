@@ -45,6 +45,7 @@ namespace ConsoleBowling
                     Console.WriteLine("That's a new high score!");
                     File.WriteAllText(HighScorePath, score.ToString());
                 }
+
                 Console.WriteLine("Press \"A\" to play again, or any other key to exit.");
                 key = Console.ReadKey();
             } while (key.Key == ConsoleKey.A);
@@ -88,22 +89,34 @@ namespace ConsoleBowling
 
         private static int PlayGame()
         {
-
             Console.WriteLine("It's time to bowl!");
             Console.WriteLine();
             var game = new Game();
             while (game.FrameNumber.HasValue)
             {
                 Console.Write($"It's frame {game.FrameNumber}, roll {game.CurrentFrame.RollNumber}. ");
-                Console.WriteLine($"There are {game.PinsUp} pins standing.");
-                Console.Write("Press any key to roll the ball...");
-                Console.ReadKey();
+                Console.WriteLine($"The score is {game.Score}.");
+                Console.WriteLine($"There are {game.PinsUp} pins standing. This roll is worth {game.NextRollWorth}x.");
+                Console.Write("Press any key to roll the ball. " +
+                              "Press C for Cheater, L for Loser, anything else for normal...");
+                var key = Console.ReadKey();
                 Console.WriteLine();
-                var pinsHit = Random.Next(game.PinsUp + 1);
+                int pinsHit;
+                switch (key.Key)
+                {
+                    case ConsoleKey.C:
+                        pinsHit = game.PinsUp;
+                        break;
+                    case ConsoleKey.L:
+                        pinsHit = 0;
+                        break;
+                    default:
+                        pinsHit = Random.Next(game.PinsUp + 1);
+                        break;
+                }
                 Console.Write($"You knocked down {pinsHit} pin{pinsHit.S()}. ");
                 game.ApplyRoll(pinsHit);
                 Console.WriteLine($"Now there {game.PinsUp.IsAre()} {game.PinsUp} pin{game.PinsUp.S()} standing.");
-                Console.WriteLine($"The score is {game.Score}");
                 Console.WriteLine();
             }
 
