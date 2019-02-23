@@ -14,6 +14,44 @@ namespace ConsoleBowling
 
         private static void Main()
         {
+            Splash();
+
+            int highScore;
+            try
+            {
+                highScore = int.Parse(File.ReadAllText(HighScorePath));
+                Console.WriteLine($"The high score is {highScore}");
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("There is no high score currently,");
+                Console.WriteLine("but don't let your guard down!");
+                highScore = 0;
+            }
+
+
+            Console.WriteLine();
+            Console.Write("Press the any key to begin...");
+
+            Console.ReadKey();
+            Console.WriteLine();
+            ConsoleKeyInfo key;
+
+            do
+            {
+                var score = PlayGame();
+                if (score > highScore)
+                {
+                    Console.WriteLine("That's a new high score!");
+                    File.WriteAllText(HighScorePath, score.ToString());
+                }
+                Console.WriteLine("Press \"A\" to play again, or any other key to exit.");
+                key = Console.ReadKey();
+            } while (key.Key == ConsoleKey.A);
+        }
+
+        private static void Splash()
+        {
             var oldBackground = Console.BackgroundColor;
             var oldForeground = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -46,30 +84,13 @@ namespace ConsoleBowling
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine();
+        }
 
-            int highScore;
-            try
-            {
-                highScore = int.Parse(File.ReadAllText(HighScorePath));
-                Console.WriteLine($"The high score is {highScore}");
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("There is no high score currently,");
-                Console.WriteLine("but don't let your guard down!");
-                highScore = 0;
-            }
-
-
-            Console.WriteLine();
-            Console.Write("Press the any key to begin...");
-
-            Console.ReadKey();
-            Console.WriteLine();
+        private static int PlayGame()
+        {
 
             Console.WriteLine("It's time to bowl!");
             Console.WriteLine();
-
             var game = new Game();
             while (game.FrameNumber.HasValue)
             {
@@ -85,17 +106,10 @@ namespace ConsoleBowling
                 Console.WriteLine($"The score is {game.Score}");
                 Console.WriteLine();
             }
+
             Console.WriteLine("All done!");
             Console.WriteLine($"Your score was {game.Score}.");
-            if (game.Score > highScore)
-            {
-                Console.WriteLine("That's a new high score!");
-                File.WriteAllText(HighScorePath, game.Score.ToString());
-            }
-            Console.Write("Press any key to exit...");
-            Console.ReadKey();
-            Console.WriteLine();
-
+            return game.Score;
         }
     }
 }
